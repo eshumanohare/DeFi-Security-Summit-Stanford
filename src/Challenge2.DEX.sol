@@ -129,8 +129,8 @@ contract InsecureDexLP {
      */
     function _calcAmountsOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) internal pure returns(uint256 amountOut) {
         amountIn = amountIn * 1000;
-        uint numerator = amountIn * reserveOut;
-        uint denominator = reserveIn * 1000 + amountIn;
+        uint numerator = amountIn * reserveOut; // 9000
+        uint denominator = reserveIn * 1000 + amountIn; // 9000 + 1000 = 10000
         amountOut = (numerator / denominator);
     }
 
