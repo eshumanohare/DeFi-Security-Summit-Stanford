@@ -39,7 +39,7 @@ contract InSecureumLenderPool {
         require(!_flashLoan, "Cannot withdraw while flash loan is active");
         balances[msg.sender] -= _amount;
         token.safeTransfer(msg.sender, _amount);
-    }   
+    }
 
     /// @dev Give borrower all the tokens to make a flashloan.
     ///      For this with get the amount of tokens in the lending pool before, then we give

